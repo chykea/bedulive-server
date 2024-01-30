@@ -3,7 +3,7 @@ const Router = require('koa-router')
 const router = new Router()
 
 // GET /
-router.all('/', (ctx, next) => {
+router.all('/api', (ctx, next) => {
     ctx.body = {
         code: '200',
         message: '默认服务正常'
