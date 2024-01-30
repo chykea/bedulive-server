@@ -6,7 +6,7 @@ class UserService {
         return res.dataValues;
     }
 
-    async getUerInfo({ id, user_name, password, is_admin }) {
+    async getUserInfo({ id, user_name, password, is_admin }) {
         const whereOpt = {}
 
         id && Object.assign(whereOpt, { id })
@@ -18,7 +18,6 @@ class UserService {
             attributes: ['id', 'user_name', 'nick_name', 'password', 'is_admin', 'is_stu'],
             where: whereOpt,
         })
-
         return res ? res.dataValues : null
     }
 }
