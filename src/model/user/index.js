@@ -21,17 +21,11 @@ const User = seq.define('bedulive_user', {
         allowNull: false,
         comment: '昵称'
     },
-    is_admin: {
+    identity: {
         type: DataTypes.BOOLEAN,
         allowNull: false,
         defaultValue: 0,
-        comment: '是否为管理员, 0: xue(默认); 1: 是管理员',
-    },
-    is_stu: {
-        type: DataTypes.BOOLEAN,
-        allowNull: false,
-        defaultValue: 0,
-        comment: '是否为学生, 0: 是(默认); 1: 教师',
+        comment: '用户身份, 0: 管理员(默认); 1: 学生; 2: 教师',
     },
 })
 

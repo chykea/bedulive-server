@@ -2,7 +2,7 @@ const Router = require('koa-router')
 const { userValidator, verifyUser, crpytPassword, verifyLogin } = require('../../middleware/user/index')
 const { login, register } = require('../../controller/user/index')
 // router 前缀
-const router = new Router({ prefix: '/api/users' })
+const router = new Router({ prefix: '/users' })
 
 // 登录
 router.post('/login', userValidator, verifyLogin, login)

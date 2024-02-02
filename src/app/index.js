@@ -7,6 +7,12 @@ const userRouter = require('../router/user/user.route.js')
 const errHandler = require('./status/index.js')
 const app = new Koa()
 
+app.use(async (ctx, next) => {
+    ctx.set("Access-Control-Allow-Origin", "*");
+    // ctx.set("Access-Control-Allow-Methods", "GET, PUT, POST, DELETE");
+    await next();
+})
+
 app.use(koaBody())
 
 app.use(defaultRouter.routes())

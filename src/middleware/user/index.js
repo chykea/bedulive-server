@@ -48,7 +48,7 @@ const verifyLogin = async (ctx, next) => {
     try {
         // 获取用户
         const res = await getUserInfo({ user_name })
-
+        console.log(res);
         if (!res) {
             console.error('用户名不存在', { user_name })
             ctx.app.emit('error', userDoesNotExist, ctx)
