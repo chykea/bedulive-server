@@ -22,14 +22,14 @@ const User = seq.define('bedulive_user', {
         comment: '昵称'
     },
     identity: {
-        type: DataTypes.BOOLEAN,
+        type: DataTypes.STRING,
         allowNull: false,
         defaultValue: 0,
         comment: '用户身份, 0: 管理员(默认); 1: 学生; 2: 教师',
     },
 })
 
-// 强制同步数据库(创建数据表)
+// 强制同步数据库(创建数据表,更新字段执行后会删除原来的表)
 // 创建后之后记得注释
 // User.sync({ force: true })
 

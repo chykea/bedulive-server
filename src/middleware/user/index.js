@@ -1,6 +1,6 @@
 const bcrypt = require('bcryptjs')
 const { getUserInfo } = require('../../service/user/index')
-const { userFormateError, userAlreadyExited, invalidPassword, userLoginError } = require('../../constanst/err.type')
+const { userFormateError, userAlreadyExited, invalidPassword, userLoginError, userDoesNotExist } = require('../../constanst/err.type')
 
 // 注册所用到的中间件
 const userValidator = async (ctx, next) => {
@@ -40,7 +40,6 @@ const crpytPassword = async (ctx, next) => {
 }
 
 // 登录
-
 const verifyLogin = async (ctx, next) => {
     // 1. 判断用户是否存在(不存在:报错)
     const { user_name, password } = ctx.request.body
@@ -48,7 +47,6 @@ const verifyLogin = async (ctx, next) => {
     try {
         // 获取用户
         const res = await getUserInfo({ user_name })
-        console.log(res);
         if (!res) {
             console.error('用户名不存在', { user_name })
             ctx.app.emit('error', userDoesNotExist, ctx)
@@ -67,6 +65,10 @@ const verifyLogin = async (ctx, next) => {
     }
 
     await next()
+}
+
+const verifyToken = async (ctx, next) => {
+
 }
 module.exports = {
     userValidator,

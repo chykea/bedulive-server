@@ -6,19 +6,20 @@ class UserController {
     async register(ctx, next) {
         // 1. 获取数据
         // 注册的时候没有昵称这个参数，需要额外的接口来对nick_name进行修改
-        const { user_name, password } = ctx.request.body
+        const { user_name, password, identity } = ctx.request.body
 
         // 经过判断后
         // 2. 操作数据库
-        const res = await createUser(user_name, password)
+        const res = await createUser(user_name, password, user_name, identity)
         // 3. 返回结果
         ctx.body = {
             code: '200',
             message: '用户注册成功',
             result: {
-                id: res.id,
+                // id: res.id,
                 user_name: res.user_name,
-                nick_name: res.nick_name
+                nick_name: res.nick_name,
+                identity: res.identity
             }
         }
     }
@@ -35,12 +36,16 @@ class UserController {
                 code: 0,
                 message: '用户登录成功',
                 result: {
+                    ...res,
                     token: jwt.sign(res, JWT_SECRET, { expiresIn: '1d' }),
                 },
             }
         } catch (err) {
             console.error('用户登录失败', err)
         }
+    }
+    async getUser(ctx, next) {
+
     }
 }
 
