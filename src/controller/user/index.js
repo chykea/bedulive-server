@@ -13,7 +13,7 @@ class UserController {
         const res = await createUser(user_name, password, user_name, identity)
         // 3. 返回结果
         ctx.body = {
-            code: '200',
+            code: 200,
             message: '用户注册成功',
             result: {
                 // id: res.id,
@@ -33,7 +33,7 @@ class UserController {
             const { password, ...res } = await getUserInfo({ user_name })
 
             ctx.body = {
-                code: 0,
+                code: 200,
                 message: '用户登录成功',
                 result: {
                     ...res,
@@ -45,7 +45,13 @@ class UserController {
         }
     }
     async getUser(ctx, next) {
-
+        const { user } = ctx.state
+        const { id, password, ...res } = await getUserInfo(user.user_name)
+        ctx.body = {
+            code: 200,
+            message: "查询成功",
+            result: res
+        }
     }
 }
 

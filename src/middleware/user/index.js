@@ -67,9 +67,6 @@ const verifyLogin = async (ctx, next) => {
     await next()
 }
 
-const verifyToken = async (ctx, next) => {
-
-}
 module.exports = {
     userValidator,
     verifyUser,
