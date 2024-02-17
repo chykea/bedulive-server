@@ -38,5 +38,10 @@ module.exports = {
         code: '10102',
         message: '无效的token',
         result: null,
+    },
+    invalidAuth: {
+        code: '10103',
+        message: '没有权限',
+        result: null,
     }
 }
