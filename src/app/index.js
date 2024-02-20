@@ -8,6 +8,10 @@ const liveRouter = require('../router/live/live.route.js')
 const errHandler = require('./status/index.js')
 const app = new Koa()
 
+var server = require('http').createServer(app.callback());
+const io = require('socket.io')(server)
+
+
 app.use(async (ctx, next) => {
 
     ctx.set("Access-Control-Allow-Origin", "*");
