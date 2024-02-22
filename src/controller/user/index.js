@@ -34,7 +34,7 @@ class UserController {
         try {
             // 从返回结果对象中剔除password属性, 将剩下的属性放到res对象
             const { password, ...res } = await getUserInfo({ user_name })
-
+            console.log(res);
             ctx.body = {
                 code: 200,
                 message: '用户登录成功',

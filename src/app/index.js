@@ -1,4 +1,5 @@
 const Koa = require('koa')
+const cors = require('koa2-cors')
 const { koaBody } = require('koa-body')
 
 const defaultRouter = require('../router/default.route')
@@ -8,11 +9,13 @@ const liveRouter = require('../router/live/live.route.js')
 const errHandler = require('./status/index.js')
 const app = new Koa()
 
-var server = require('http').createServer(app.callback());
-const io = require('socket.io')(server)
+const server = require('http').createServer(app.callback());
+const io = require('../socket')(server)
 
+// console.log(io);
 
-app.use(async (ctx, next) => {
+app.use(cors())
+/* app.use(async (ctx, next) => {
 
     ctx.set("Access-Control-Allow-Origin", "*");
     // 允许哪些请求方式
@@ -36,7 +39,7 @@ app.use(async (ctx, next) => {
 
     // ctx.set("Access-Control-Allow-Methods", "GET, PUT, POST, DELETE");
     await next();
-})
+}) */
 
 app.use(koaBody())
 
@@ -46,5 +49,6 @@ app.use(liveRouter.routes())
 
 // 监听错误
 app.on('error', errHandler)
-
-module.exports = app
+// console.log('koa', app);
+// console.log('httpServer', server);
+module.exports = server
