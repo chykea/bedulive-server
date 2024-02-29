@@ -26,7 +26,7 @@ module.exports = {
     },
     invalidPassword: {
         code: '10006',
-        message: '密码不匹配',
+        message: '账号密码不匹配',
         result: null,
     },
     tokenExpiredError: {
@@ -43,5 +43,6 @@ module.exports = {
         code: '10103',
         message: '没有权限',
         result: null,
-    }
+    },
+
 }

@@ -1,4 +1,4 @@
-const { createUser, getUserInfo } = require('../../service/user/index.js')
+const { createUser, getUserInfo, updateById } = require('../../service/user/index.js')
 const { JWT_SECRET } = require('../../config/config.default.js')
 const jwt = require('jsonwebtoken')
 const { v1: uuidv1 } = require('uuid')
@@ -34,7 +34,6 @@ class UserController {
         try {
             // 从返回结果对象中剔除password属性, 将剩下的属性放到res对象
             const { password, ...res } = await getUserInfo({ user_name })
-            console.log(res);
             ctx.body = {
                 code: 200,
                 message: '用户登录成功',
@@ -47,15 +46,54 @@ class UserController {
             console.error('用户登录失败', err)
         }
     }
-    async getUser(ctx, next) {
-        const { user } = ctx.state
-        const { id, password, ...res } = await getUserInfo(user.user_name)
-        ctx.body = {
-            code: 200,
-            message: "查询成功",
-            result: res
+    async changePassword(ctx, next) {
+        // 1. 获取数据
+        const id = ctx.state.user.id
+        const password = ctx.request.body.password
+        if (password == '') {
+            ctx.body = {
+                code: '10008',
+                message: '密码不能为空',
+                result: '',
+            }
+            return
+        }
+        // 2. 操作数据库
+        if (await updateById({ id, password })) {
+            console.log('修改密码成功');
+            ctx.body = {
+                code: 0,
+                message: '修改密码成功',
+                result: '',
+            }
+        } else {
+            ctx.body = {
+                code: '10007',
+                message: '修改密码失败',
+                result: '',
+            }
         }
     }
+    async changeInfo(ctx, next) {
+        const id = ctx.state.user.id
+        const { ...info } = ctx.request.body
+        if (await updateById({ id, ...info })) {
+            const { password, ...res } = await getUserInfo({ id })
+            ctx.body = {
+                code: 0,
+                message: '修改成功',
+                result: res,
+            }
+        } else {
+            ctx.body = {
+                code: '10009',
+                message: '修改失败',
+                result: null,
+            }
+        }
+    }
+
+
 }
 
 module.exports = new UserController()

@@ -12,5 +12,6 @@ module.exports = (err, ctx) => {
     }
     ctx.status = status
     ctx.body = err
-    console.log(err)
+    console.log('错误消息', err);
+    // console.log(err)
 }
