@@ -1,7 +1,7 @@
 const { DataTypes, Sequelize } = require('sequelize')
 
 const seq = require('../../db/seq')
-
+const Live = require('../live/index')
 // 创建模型(Model zd_user -> 表 zd_users)
 const User = seq.define('bedulive_user', {
     // id 会被sequelize自动创建, 管理
@@ -35,6 +35,7 @@ const User = seq.define('bedulive_user', {
     },
 })
 
+// User.hasMany(Live, { foreignKey: 'uid' })
 // 强制同步数据库(创建数据表,更新字段执行后会删除原来的表)
 // 创建后之后记得注释
 // User.sync({ force: true })

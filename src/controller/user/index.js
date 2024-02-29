@@ -1,4 +1,5 @@
 const { createUser, getUserInfo, updateById } = require('../../service/user/index.js')
+const { createLiveRoom } = require('../../service/live/index.js')
 const { JWT_SECRET } = require('../../config/config.default.js')
 const jwt = require('jsonwebtoken')
 const { v1: uuidv1 } = require('uuid')
@@ -9,10 +10,12 @@ class UserController {
         // 注册的时候没有昵称这个参数，需要额外的接口来对nick_name进行修改
         const { user_name, password, identity } = ctx.request.body
         const uid = uuidv1()
-        // console.log(uid);
         // 经过判断后
         // 2. 操作数据库
         const res = await createUser(uid, user_name, password, user_name, identity)
+        if (identity !== '1') {
+            await createLiveRoom({ uid })
+        }
         // 3. 返回结果
         ctx.body = {
             code: 200,

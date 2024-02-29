@@ -31,6 +31,8 @@ class UserService {
         const res = await User.update(newUser, { where: whereOpt })
         return res[0] > 0 ? true : false
     }
+
+
 }
 
 module.exports = new UserService()
