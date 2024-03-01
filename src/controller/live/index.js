@@ -11,6 +11,7 @@ class LiveController {
     async getLiveRoom(ctx, next) {
         const { roomId: uid } = ctx.query
         const res = await getLiveRoomBy({ uid })
+        console.log(res);
         ctx.body = {
             code: '0',
             message: '查询成功',

@@ -4,12 +4,12 @@ const { QueryTypes } = require('sequelize')
 class LiveService {
 
     async getLiveRoomBy({ uid }) {
+
         const [res] = await seq.query(
             `SELECT bedulive_users.user_name, bedulive_users.nick_name, bedulive_lives.title 
-        FROM bedulive_users 
-        INNER JOIN bedulive_lives
-        where bedulive_users.uid = :uid
-        LIMIT 1
+        FROM bedulive_lives
+        INNER JOIN bedulive_users ON bedulive_lives.uid = bedulive_users.uid
+        where bedulive_lives.uid = :uid
         `, { type: QueryTypes.SELECT, replacements: { uid } })
 
         return res ? res : null
