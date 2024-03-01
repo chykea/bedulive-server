@@ -13,8 +13,9 @@ function createSocket(server) {
         // socket 即当前连接的用户
         socket.on('join', (data) => {
             socket.join(data.roomId)
-            socket.broadcast.to(data.roomId).emit('join', `${data.user.user_name}进入房间`)
 
+            socket.emit('currentUser', io.sockets.adapter.rooms.get(data.roomId).size)
+            socket.broadcast.to(data.roomId).emit('currentUser', io.sockets.adapter.rooms.get(data.roomId).size)
             // 如果教师已经编辑
             socket.emit('initCode', historyMap.get(data.roomId)?.codeHistory || null)
             // 当前用户连接且教师已经编辑
@@ -23,7 +24,8 @@ function createSocket(server) {
 
         })
         socket.on('leave', (roomId) => {
-            // 离开房间倒不用广播
+
+            (io.sockets.adapter.rooms.get(roomId)) && socket.broadcast.to(roomId).emit('currentUser', io.sockets.adapter.rooms.get(roomId).size - 1)
             socket.leave(roomId)
             if (!(io.sockets.adapter.rooms.get(roomId) && io.sockets.adapter.rooms.get(roomId).size)) {
                 // 没有用户,就获取不到房间,直接清空
