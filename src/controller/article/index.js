@@ -1,7 +1,7 @@
-const { createArticle, getArticleDetail, getArticleList, deleteArticle } = require('../../service/article/index')
+const { createArticle, getArticleDetail, getArticleList, getAllArticleList, deleteArticleByID } = require('../../service/article/index')
 class ArticleController {
     async addArticle(ctx, next) {
-        const { uid, user_name: author } = ctx.state.user
+        const { uid, nick_name: author } = ctx.state.user
         const { title, content } = ctx.request.body
         const res = await createArticle({ uid, author, title, content })
         if (res) {
@@ -18,12 +18,49 @@ class ArticleController {
     }
     async getAllArticleByUID(ctx, next) {
         const { uid } = ctx.state.user
-        const res = await getArticleList({ uid })
+        const { page } = ctx.query
+        const res = await getArticleList({ uid, page })
         ctx.body = {
             code: '0',
             message: '获取成功',
-            data: res
+            res
         }
+    }
+    async getAllArticle(ctx, next) {
+        const { page } = ctx.query
+        const res = await getAllArticleList({ page })
+
+        ctx.body = {
+            code: '0',
+            message: '获取成功',
+            res
+        }
+    }
+    async getDetail(ctx, next) {
+        const { id } = ctx.query
+        const res = await getArticleDetail({ id })
+        ctx.body = {
+            code: '0',
+            message: '获取成功',
+            res
+        }
+    }
+    async deleteArticle(ctx, next) {
+        const { id } = ctx.query
+        const { uid } = ctx.state.user
+        const res = await deleteArticleByID({ id, uid })
+        if (res) {
+            ctx.body = {
+                code: '0',
+                message: '删除成功',
+            }
+        } else {
+            ctx.body = {
+                code: '1',
+                message: '删除失败,查询不到该文章',
+            }
+        }
+
     }
 }
 

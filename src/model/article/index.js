@@ -49,6 +49,6 @@ const Article = seq.define('bedulive_article', {
 
 // 强制同步数据库(创建数据表,更新字段执行后会删除原来的表)
 // 创建后之后记得注释
-Article.sync({ force: true })
+// Article.sync({ force: true })
 
 module.exports = Article
