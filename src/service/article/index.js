@@ -3,9 +3,9 @@ const Article = require('../../model/article/index')
 const { QueryTypes } = require('sequelize')
 class ArticleService {
     // 发布文章
-    async createArticle({ uid, title, author, content, category }) {
+    async createArticle({ uid, title, author, content, digest, category }) {
         const res = await Article.create({
-            uid, title, author, content
+            uid, title, author, content, digest
         })
         return res.dataValues ? true : false
     }
@@ -14,7 +14,7 @@ class ArticleService {
         // , attributes: ['id', 'uid', 'title', 'author', 'createdAt', 'updatedAt']
         let article = Article.findAll({
             limit: pageSize, offset: (page - 1) * pageSize,
-            attributes: ['id', 'uid', 'title', 'content', 'author', 'createdAt', 'updatedAt']
+            attributes: ['id', 'uid', 'title', 'digest', 'author', 'createdAt', 'updatedAt']
         })
         let count = Article.count()
 
@@ -52,8 +52,13 @@ class ArticleService {
 
         return res.dataValues
     }
+    async updateArticle({ uid, author, digest, id, title, content }) {
+        const [res] = await Article.update({ title, content, author, digest }, { where: { id, uid } })
+        return res
+    }
     // 删除文章
     async deleteArticleByID({ id, uid }) {
+        // 根据文章id、用户uid进行删除
         const res = await Article.destroy({ where: { id, uid } })
         if (res === 1) {
             return true

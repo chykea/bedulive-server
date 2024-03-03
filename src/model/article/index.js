@@ -1,5 +1,5 @@
 const { DataTypes, Sequelize } = require('sequelize')
-
+const moment = require('moment')
 const seq = require('../../db/seq')
 
 // 文章模型
@@ -14,6 +14,11 @@ const Article = seq.define('bedulive_article', {
         type: DataTypes.STRING,
         allowNull: false,
         comment: '作者名字',
+    },
+    digest: {
+        type: DataTypes.STRING,
+        allowNull: false,
+        comment: '文章摘要'
     },
     title: {
         type: DataTypes.STRING,

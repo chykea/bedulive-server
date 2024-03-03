@@ -1,9 +1,9 @@
-const { createArticle, getArticleDetail, getArticleList, getAllArticleList, deleteArticleByID } = require('../../service/article/index')
+const { createArticle, getArticleDetail, getArticleList, getAllArticleList, deleteArticleByID, updateArticle } = require('../../service/article/index')
 class ArticleController {
     async addArticle(ctx, next) {
         const { uid, nick_name: author } = ctx.state.user
-        const { title, content } = ctx.request.body
-        const res = await createArticle({ uid, author, title, content })
+        const { title, content, digest } = ctx.request.body
+        const res = await createArticle({ uid, author, title, content, digest })
         if (res) {
             ctx.body = {
                 code: '0',
@@ -61,6 +61,30 @@ class ArticleController {
             }
         }
 
+    }
+    async updatedUserArticle(ctx, next) {
+        const { uid, nick_name: author } = ctx.state.user
+        const { id, title, content, digest } = ctx.request.body
+        console.log(id, title, content, digest);
+        if (!id || !title || !content || !digest) {
+            ctx.body = {
+                code: '1',
+                message: '参数不完整',
+            }
+            return
+        }
+        const res = await updateArticle({ id, author, uid, title, digest, content })
+        if (res) {
+            ctx.body = {
+                code: '0',
+                message: '更新成功',
+            }
+        } else {
+            ctx.body = {
+                code: '1',
+                message: '更新失败',
+            }
+        }
     }
 }
 
