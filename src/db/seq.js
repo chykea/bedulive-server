@@ -20,7 +20,12 @@ const seq = new Sequelize(MYSQL_DB, MYSQL_USER, MYSQL_PWD, {
         max: 3          //  设置重试次数
     },
     omitNull: false,    //  null 是否通过SQL语句查询
-    timezone: '+08:00'
+    timezone: '+08:00',
+    dialectOptions: {
+        charset: "utf8mb4",
+        dateStrings: true,
+        typeCast: true,
+    },
 })
 
 seq

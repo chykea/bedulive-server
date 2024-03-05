@@ -1,4 +1,6 @@
-const { createArticle, getArticleDetail, getArticleList, getAllArticleList, deleteArticleByID, updateArticle } = require('../../service/article/index')
+const { createArticle, getArticleDetail, getArticleList, getAllArticleList, deleteArticleByID, updateArticle, // 发布文章
+    addComments,
+} = require('../../service/article/index')
 class ArticleController {
     async addArticle(ctx, next) {
         const { uid, nick_name: author } = ctx.state.user
@@ -39,10 +41,18 @@ class ArticleController {
     async getDetail(ctx, next) {
         const { id } = ctx.query
         const res = await getArticleDetail({ id })
-        ctx.body = {
-            code: '0',
-            message: '获取成功',
-            res
+
+        if (res) {
+            ctx.body = {
+                code: '0',
+                message: '获取成功',
+                res
+            }
+        } else {
+            ctx.body = {
+                code: '1',
+                message: '获取失败',
+            }
         }
     }
     async deleteArticle(ctx, next) {
@@ -85,6 +95,30 @@ class ArticleController {
                 message: '更新失败',
             }
         }
+    }
+    async comments(ctx, next) {
+        const { id: userId } = ctx.state.user
+        // 客户端发送parentId如果为null的话,这边是空字符串
+        let { articleId, content, parentId } = ctx.request.body
+        !parentId ? parentId = null : ''
+        console.log(userId);
+        const res = await addComments({ articleId, content, parentId, userId })
+        if (res) {
+            ctx.body = {
+                code: '0',
+                message: '发布评论成功',
+                res,
+            }
+            return
+        }
+        ctx.body = {
+            code: '1',
+            message: '发布评论失败',
+        }
+    }
+    async deleteComments(ctx, next) {
+        // const { id } = ctx.state.user
+        // const { commentId } = ctx.request.body
     }
 }
 
