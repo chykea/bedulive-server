@@ -53,7 +53,7 @@ class ArticleService {
             attributes: ['id', 'articleId', 'parentId', 'content', 'createdAt'],
             include: [{
                 model: User,
-                attributes: ['id', 'nick_name',],
+                attributes: ['uid', 'nick_name'],
                 as: 'user'
             }]
         })
@@ -66,7 +66,7 @@ class ArticleService {
             attributes: ['id', 'articleId', 'parentId', 'content', 'createdAt'],
             include: [{
                 model: User,
-                attributes: ['id', 'nick_name',],
+                attributes: ['uid', 'nick_name'],
                 as: 'user'
 
             }]
