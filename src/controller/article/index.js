@@ -1,5 +1,5 @@
 const { createArticle, getArticleDetail, getArticleList, getAllArticleList, deleteArticleByID, updateArticle, // 发布文章
-    addComments,
+    addComments, deleteCommentsByID
 } = require('../../service/article/index')
 class ArticleController {
     async addArticle(ctx, next) {
@@ -101,7 +101,6 @@ class ArticleController {
         // 客户端发送parentId如果为null的话,这边是空字符串
         let { articleId, content, parentId } = ctx.request.body
         !parentId ? parentId = null : ''
-        console.log(userId);
         const res = await addComments({ articleId, content, parentId, userId })
         if (res) {
             ctx.body = {
@@ -117,8 +116,28 @@ class ArticleController {
         }
     }
     async deleteComments(ctx, next) {
-        // const { id } = ctx.state.user
-        // const { commentId } = ctx.request.body
+        // 评论id
+        const { commentId: id } = ctx.query
+        if (!id) {
+            ctx.body = {
+                code: '1',
+                message: '参数不完整',
+            }
+            return
+        }
+        const res = await deleteCommentsByID({ id })
+        if (res) {
+            ctx.body = {
+                code: '0',
+                message: '删除评论成功',
+            }
+            return
+        }
+        ctx.body = {
+            code: '1',
+            message: '删除评论失败',
+        }
+
     }
 }
 

@@ -7,7 +7,8 @@ const {
     getDetail,
     deleteArticle,
     updatedUserArticle,
-    comments
+    comments,
+    deleteComments
 } = require('../../controller/article/index')
 
 const router = new Router({ prefix: '/article' })
@@ -27,5 +28,7 @@ router.get('/deleteArticle', auth, deleteArticle)
 router.post('/comment', auth, comments)
 // 回复评论
 router.post('/reply', auth, comments)
+// 删除评论
+router.get('/delete', auth, deleteComments)
 
 module.exports = router
