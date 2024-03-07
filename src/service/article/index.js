@@ -20,6 +20,22 @@ class ArticleService {
 
         return { articles, total }
     }
+    // 搜索文章
+    async searchArticleBy({ keyword, page, pageSize = 8 }) {
+        let { rows: articles, count: total } = await Article.findAndCountAll({
+            where: {
+                title: {
+                    [Op.like]: '%' + keyword + '%'
+                }
+            },
+            limit: pageSize,
+            offset: (page - 1) * pageSize,
+            attributes: ['id', 'uid', 'title', 'digest', 'author', 'commentCount', 'createdAt']
+        })
+
+        return { articles, total }
+    }
+
     // 获取用户发布文章列表
     async getArticleList({ uid, page, pageSize = 10 }) {
         // 
@@ -125,6 +141,7 @@ class ArticleService {
 
 
     }
+    // 删除评论/回复
     async deleteCommentsByID({ id }) {
         const res = await Comment.destroy({ where: { id } })
         return res === 1 ? true : false

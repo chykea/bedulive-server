@@ -1,5 +1,5 @@
 const { createArticle, getArticleDetail, getArticleList, getAllArticleList, deleteArticleByID, updateArticle, // 发布文章
-    addComments, deleteCommentsByID
+    addComments, deleteCommentsByID, searchArticleBy
 } = require('../../service/article/index')
 class ArticleController {
     async addArticle(ctx, next) {
@@ -136,6 +136,25 @@ class ArticleController {
         ctx.body = {
             code: '1',
             message: '删除评论失败',
+        }
+
+    }
+    async searchArticle(ctx, next) {
+
+        const { keyword, page } = ctx.request.body
+        console.log(keyword, page);
+        if (!keyword) {
+            ctx.body = {
+                code: '1',
+                message: '参数不完整',
+            }
+            return
+        }
+        const res = await searchArticleBy({ keyword, page })
+        ctx.body = {
+            code: '0',
+            message: '查询成功',
+            res,
         }
 
     }

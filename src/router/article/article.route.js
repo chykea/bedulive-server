@@ -8,7 +8,8 @@ const {
     deleteArticle,
     updatedUserArticle,
     comments,
-    deleteComments
+    deleteComments,
+    searchArticle
 } = require('../../controller/article/index')
 
 const router = new Router({ prefix: '/article' })
@@ -23,6 +24,8 @@ router.get('/getArticleDetail', getDetail)
 router.post('/updateArticle', auth, updatedUserArticle)
 // 删除文章
 router.get('/deleteArticle', auth, deleteArticle)
+// 搜索文章
+router.post('/searchArticle', auth, searchArticle)
 
 // 发布评论
 router.post('/comment', auth, comments)

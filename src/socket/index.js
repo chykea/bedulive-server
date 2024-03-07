@@ -33,6 +33,10 @@ function createSocket(server) {
             }
         })
 
+        socket.on('updateRoomInfo', (data) => {
+            socket.broadcast.to(data.roomId).emit('updateRoom', data.roomInfo)
+        })
+
         socket.on('sendMsg', (data, cb) => {
             if (data.type == 'chat') {
                 socket.broadcast.to(data.roomId).emit('getMsg', data)
