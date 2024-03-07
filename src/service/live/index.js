@@ -13,7 +13,7 @@ class LiveService {
             include: [{
                 model: User,
                 as: 'user',
-                attributes: ['user_name', 'nick_name']
+                attributes: ['user_name', 'avatar_url', 'nick_name']
             }]
         })
         return res ? res : null
@@ -24,7 +24,7 @@ class LiveService {
             include: [{
                 model: User,
                 as: 'user',
-                attributes: ['user_name', 'nick_name']
+                attributes: ['user_name', 'avatar_url', 'nick_name']
             }]
         })
         return res ? res : null

@@ -18,7 +18,7 @@ class ArticleService {
             attributes: ['id', 'uid', 'title', 'digest', 'commentCount', 'createdAt'],
             include: [{
                 model: User,
-                attributes: ['user_name', 'nick_name'],
+                attributes: ['user_name', 'avatar_url', 'nick_name'],
                 as: 'user'
             }]
         })
@@ -37,7 +37,7 @@ class ArticleService {
             attributes: ['id', 'uid', 'title', 'digest', 'commentCount', 'createdAt'],
             include: [{
                 model: User,
-                attributes: ['user_name', 'nick_name'],
+                attributes: ['user_name', 'avatar_url', 'nick_name'],
                 as: 'user'
             }]
         })
@@ -72,7 +72,7 @@ class ArticleService {
             include: [{
                 model: User,
                 as: 'user',
-                attributes: ['user_name', 'nick_name']
+                attributes: ['user_name', 'avatar_url', 'nick_name']
             }]
         })
         if (article === null) return null
@@ -82,7 +82,7 @@ class ArticleService {
             attributes: ['id', 'articleId', 'parentId', 'content', 'createdAt'],
             include: [{
                 model: User,
-                attributes: ['uid', 'nick_name'],
+                attributes: ['uid', 'avatar_url', 'nick_name'],
                 as: 'user'
             }]
         })
@@ -95,7 +95,7 @@ class ArticleService {
             attributes: ['id', 'articleId', 'parentId', 'content', 'createdAt'],
             include: [{
                 model: User,
-                attributes: ['uid', 'nick_name'],
+                attributes: ['uid', 'avatar_url', 'nick_name'],
                 as: 'user'
 
             }]

@@ -26,6 +26,10 @@ const User = seq.define('bedulive_user', {
         allowNull: false,
         comment: '昵称'
     },
+    avatar_url: {
+        type: DataTypes.STRING,
+        comment: "用户头像地址"
+    },
     identity: {
         type: DataTypes.STRING,
         allowNull: false,

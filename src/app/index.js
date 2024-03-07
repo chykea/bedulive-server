@@ -1,7 +1,12 @@
 const Koa = require('koa')
 const cors = require('koa2-cors')
 const { koaBody } = require('koa-body')
+const koaStatic = require('koa-static')
 const path = require('path')
+
+// const ssl = require('koa-sslify').default
+// const https = require('https')
+// const fs = require('fs')
 
 const defaultRouter = require('../router/default.route')
 const userRouter = require('../router/user/user.route.js')
@@ -13,7 +18,6 @@ const app = new Koa()
 
 const server = require('http').createServer(app.callback());
 const io = require('../socket')(server)
-
 
 
 app.use(cors())
@@ -45,13 +49,13 @@ app.use(cors())
 
 app.use(koaBody({
     multipart: true, // 支持文件上传
-    encoding: 'gzip',
     formidable: {
         maxFileSize: 200 * 1024 * 1024, // 设置上传文件大小最大限制，默认为2M
         keepExtensions: true, // 保持文件的后缀
         uploadDir: path.join(__dirname, '../uploads'), // 设置文件上传目录
     }
 }))
+app.use(koaStatic(path.join(__dirname, '../uploads')))
 
 app.use(defaultRouter.routes())
 app.use(userRouter.routes())

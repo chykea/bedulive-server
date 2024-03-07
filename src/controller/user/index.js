@@ -1,6 +1,6 @@
 const { createUser, getUserInfo, updateById } = require('../../service/user/index.js')
 const { createLiveRoom } = require('../../service/live/index.js')
-const { JWT_SECRET } = require('../../config/config.default.js')
+const { JWT_SECRET, SERVER_URL } = require('../../config/config.default.js')
 const jwt = require('jsonwebtoken')
 const { v1: uuidv1 } = require('uuid')
 const path = require('path')
@@ -95,16 +95,26 @@ class UserController {
             }
         }
     }
-
     async uploadImage(ctx, next) {
         // 1. 解析请求
-        const { file } = ctx.body.files
+        const { id } = ctx.state.user
+        const { file } = ctx.request.files
+        const fileTypes = ['image/jpeg', 'image/png'];
         if (file) {
+            if (!fileTypes.includes(file.mimetype)) {
+                ctx.body = {
+                    code: '1',
+                    message: '文件类型不正确',
+                }
+                return
+            }
+            const avatar_url = SERVER_URL + '/' + path.basename(file.filepath)
+            updateById({ id, avatar_url })
             ctx.body = {
                 code: 0,
                 message: '上传图片成功',
                 result: {
-                    avatar: path.basename(file.path)
+                    avatar: SERVER_URL + '/' + path.basename(file.filepath)
                 }
             }
             return

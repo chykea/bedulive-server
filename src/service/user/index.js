@@ -15,18 +15,19 @@ class UserService {
         identity && Object.assign(whereOpt, { identity })
 
         const res = await User.findOne({
-            attributes: ['id', 'uid', 'user_name', 'nick_name', 'password', 'identity'],
+            attributes: ['id', 'uid', 'user_name', 'avatar_url', 'nick_name', 'password', 'identity'],
             where: whereOpt,
         })
         return res ? res.dataValues : null
     }
-    async updateById({ id, user_name, password, nick_name }) {
+    async updateById({ id, user_name, password, nick_name, avatar_url }) {
         const whereOpt = { id }
         const newUser = {}
 
         user_name && Object.assign(newUser, { user_name })
         password && Object.assign(newUser, { password })
         nick_name && Object.assign(newUser, { nick_name })
+        avatar_url && Object.assign(newUser, { avatar_url })
 
         const res = await User.update(newUser, { where: whereOpt })
         return res[0] > 0 ? true : false
