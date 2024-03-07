@@ -3,6 +3,7 @@ const { createLiveRoom } = require('../../service/live/index.js')
 const { JWT_SECRET } = require('../../config/config.default.js')
 const jwt = require('jsonwebtoken')
 const { v1: uuidv1 } = require('uuid')
+const path = require('path')
 
 class UserController {
     async register(ctx, next) {
@@ -29,7 +30,6 @@ class UserController {
             }
         }
     }
-
     async login(ctx, next) {
         const { user_name } = ctx.request.body
 
@@ -96,12 +96,22 @@ class UserController {
         }
     }
 
-    async uploadImage() {
+    async uploadImage(ctx, next) {
         // 1. 解析请求
-        console.log(ctx.body.files.file);
+        const { file } = ctx.body.files
+        if (file) {
+            ctx.body = {
+                code: 0,
+                message: '上传图片成功',
+                result: {
+                    avatar: path.basename(file.path)
+                }
+            }
+            return
+        }
         ctx.body = {
-            code: 200,
-            message: '上传图片成功',
+            code: '1',
+            message: '上传图片失败'
         }
     }
 }
