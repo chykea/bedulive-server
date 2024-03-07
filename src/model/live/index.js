@@ -1,5 +1,5 @@
 const { DataTypes, Sequelize } = require('sequelize')
-
+const User = require('../../model/user/index')
 const seq = require('../../db/seq')
 
 // 创建模型(Model bedulive_live -> 表 bedulive_live)
@@ -21,6 +21,12 @@ const Live = seq.define('bedulive_live', {
 
 })
 
+Live.belongsTo(User, {
+    foreignKey: 'uid',
+    targetKey: 'uid',
+    onDelete: 'CASCADE',
+    as: 'user'
+})
 // 强制同步数据库(创建数据表,更新字段执行后会删除原来的表)
 // 创建后之后记得注释
 // Live.sync({ force: true })

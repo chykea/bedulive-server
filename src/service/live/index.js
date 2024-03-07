@@ -1,23 +1,32 @@
 const seq = require('../../db/seq')
 const Live = require('../../model/live/index')
+const User = require('../../model/user/index')
 const { QueryTypes } = require('sequelize')
 class LiveService {
 
     async getLiveRoomBy({ uid }) {
-
-        const [res] = await seq.query(
-            `SELECT bedulive_users.user_name, bedulive_users.nick_name, bedulive_lives.title 
-        FROM bedulive_lives
-        INNER JOIN bedulive_users ON bedulive_lives.uid = bedulive_users.uid
-        where bedulive_lives.uid = :uid
-        `, { type: QueryTypes.SELECT, replacements: { uid } })
-
+        const res = Live.findOne({
+            where: {
+                uid
+            },
+            attributes: ['id', 'uid', 'title'],
+            include: [{
+                model: User,
+                as: 'user',
+                attributes: ['user_name', 'nick_name']
+            }]
+        })
         return res ? res : null
     }
     async getAllLiveRoom() {
-        const res = await seq.query(`SELECT bedulive_users.uid, bedulive_users.user_name, bedulive_users.nick_name, bedulive_lives.title 
-        FROM bedulive_users 
-        INNER JOIN bedulive_lives ON bedulive_users.uid = bedulive_lives.uid`, { type: QueryTypes.SELECT })
+        const res = await Live.findAll({
+            attributes: ['id', 'uid', 'title'],
+            include: [{
+                model: User,
+                as: 'user',
+                attributes: ['user_name', 'nick_name']
+            }]
+        })
         return res ? res : null
     }
 

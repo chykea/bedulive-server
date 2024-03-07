@@ -1,7 +1,6 @@
 const { DataTypes, Sequelize } = require('sequelize')
 
 const seq = require('../../db/seq')
-const Live = require('../live/index')
 // 创建模型(Model zd_user -> 表 zd_users)
 const User = seq.define('bedulive_user', {
     // id 会被sequelize自动创建, 管理
