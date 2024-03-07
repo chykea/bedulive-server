@@ -96,7 +96,14 @@ class UserController {
         }
     }
 
-
+    async uploadImage() {
+        // 1. 解析请求
+        console.log(ctx.body.files.file);
+        ctx.body = {
+            code: 200,
+            message: '上传图片成功',
+        }
+    }
 }
 
 module.exports = new UserController()
