@@ -140,16 +140,7 @@ class ArticleController {
 
     }
     async searchArticle(ctx, next) {
-
         const { keyword, page } = ctx.request.body
-        console.log(keyword, page);
-        if (!keyword) {
-            ctx.body = {
-                code: '1',
-                message: '参数不完整',
-            }
-            return
-        }
         const res = await searchArticleBy({ keyword, page })
         ctx.body = {
             code: '0',

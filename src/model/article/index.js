@@ -11,11 +11,6 @@ const Article = seq.define('bedulive_article', {
         allowNull: false,
         comment: '用户的uid',
     },
-    author: {
-        type: DataTypes.STRING,
-        allowNull: false,
-        comment: '作者名字',
-    },
     digest: {
         type: DataTypes.STRING,
         allowNull: false,
@@ -94,6 +89,12 @@ const Comment = seq.define('bedulive_comment', {
     }
 })
 
+Article.belongsTo(User, {
+    foreignKey: 'uid',
+    targetKey: 'uid', // 当管理的字段不是主键时,需要指明一下
+    onDelete: 'CASCADE',
+    as: 'user'
+})
 Article.hasMany(Comment, {
     foreignKey: 'articleId',
     onDelete: 'CASCADE',

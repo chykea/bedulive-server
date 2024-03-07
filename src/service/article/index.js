@@ -15,9 +15,13 @@ class ArticleService {
         let { rows: articles, count: total } = await Article.findAndCountAll({
             limit: pageSize,
             offset: (page - 1) * pageSize,
-            attributes: ['id', 'uid', 'title', 'digest', 'author', 'commentCount', 'createdAt']
+            attributes: ['id', 'uid', 'title', 'digest', 'commentCount', 'createdAt'],
+            include: [{
+                model: User,
+                attributes: ['user_name', 'nick_name'],
+                as: 'user'
+            }]
         })
-
         return { articles, total }
     }
     // 搜索文章
@@ -30,7 +34,12 @@ class ArticleService {
             },
             limit: pageSize,
             offset: (page - 1) * pageSize,
-            attributes: ['id', 'uid', 'title', 'digest', 'author', 'commentCount', 'createdAt']
+            attributes: ['id', 'uid', 'title', 'digest', 'commentCount', 'createdAt'],
+            include: [{
+                model: User,
+                attributes: ['user_name', 'nick_name'],
+                as: 'user'
+            }]
         })
 
         return { articles, total }
@@ -41,7 +50,7 @@ class ArticleService {
         // 
         let { rows: articles, count: total } = await Article.findAndCountAll({
             where: { uid },
-            attributes: ['id', 'uid', 'title', 'author', 'createdAt', 'updatedAt'],
+            attributes: ['id', 'uid', 'title', 'createdAt', 'updatedAt'],
             limit: pageSize,
             offset: (page - 1) * pageSize
         })
@@ -53,14 +62,18 @@ class ArticleService {
             where: { id }, attributes: [
                 "id",
                 "uid",
-                "author",
                 "digest",
                 "title",
                 "content",
                 "commentCount",
                 "category",
                 "createdAt",
-            ]
+            ],
+            include: [{
+                model: User,
+                as: 'user',
+                attributes: ['user_name', 'nick_name']
+            }]
         })
         if (article === null) return null
         // 找出评论
