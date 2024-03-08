@@ -1,6 +1,8 @@
 const bcrypt = require('bcryptjs')
 const { getUserInfo } = require('../../service/user/index')
+
 const { userFormateError, userAlreadyExited, invalidPassword, userLoginError, userDoesNotExist } = require('../../constanst/err.type')
+
 
 // 注册所用到的中间件
 const userValidator = async (ctx, next) => {
@@ -75,10 +77,12 @@ const verifyOldPassword = async (ctx, next) => {
 
 }
 
+
+
 module.exports = {
     userValidator,
     verifyUser,
     crpytPassword,
     verifyLogin,
-    verifyOldPassword
+    verifyOldPassword,
 }
