@@ -11,6 +11,10 @@ const Article = seq.define('bedulive_article', {
         allowNull: false,
         comment: '用户的uid',
     },
+    cover_url: {
+        type: DataTypes.STRING,
+        comment: '文章封面'
+    },
     digest: {
         type: DataTypes.STRING,
         allowNull: false,
@@ -36,6 +40,10 @@ const Article = seq.define('bedulive_article', {
         allowNull: false,
         comment: "文章分类",
         defaultValue: "默认分类"
+    },
+    file_url: {
+        type: DataTypes.STRING,
+        comment: '文章附件'
     },
     // 创建时间
     createdAt: {

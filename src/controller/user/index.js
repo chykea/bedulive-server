@@ -95,35 +95,7 @@ class UserController {
             }
         }
     }
-    async uploadImage(ctx, next) {
-        // 1. 解析请求
-        const { id } = ctx.state.user
-        const { file } = ctx.request.files
-        const fileTypes = ['image/jpeg', 'image/png'];
-        if (file) {
-            if (!fileTypes.includes(file.mimetype)) {
-                ctx.body = {
-                    code: '1',
-                    message: '文件类型不正确',
-                }
-                return
-            }
-            const avatar_url = SERVER_URL + '/' + path.basename(file.filepath)
-            updateById({ id, avatar_url })
-            ctx.body = {
-                code: 0,
-                message: '上传图片成功',
-                result: {
-                    avatar: SERVER_URL + '/' + path.basename(file.filepath)
-                }
-            }
-            return
-        }
-        ctx.body = {
-            code: '1',
-            message: '上传图片失败'
-        }
-    }
+
 }
 
 module.exports = new UserController()

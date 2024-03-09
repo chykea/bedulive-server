@@ -4,9 +4,9 @@ const { Article, Comment } = require('../../model/article/index')
 const { Op } = require('sequelize')
 class ArticleService {
     // 发布文章
-    async createArticle({ uid, title, author, content, digest, category }) {
+    async createArticle({ uid, title, cover_url = '', author, content, digest, category, file_url = '' }) {
         const res = await Article.create({
-            uid, title, author, content, digest
+            uid, title, author, content, digest, cover_url, file_url
         })
         return res.dataValues ? true : false
     }
@@ -15,7 +15,7 @@ class ArticleService {
         let { rows: articles, count: total } = await Article.findAndCountAll({
             limit: pageSize,
             offset: (page - 1) * pageSize,
-            attributes: ['id', 'uid', 'title', 'digest', 'commentCount', 'createdAt'],
+            attributes: ['id', 'uid', 'title', 'digest', 'commentCount', 'createdAt', 'cover_url'],
             include: [{
                 model: User,
                 attributes: ['user_name', 'avatar_url', 'nick_name'],
@@ -34,7 +34,7 @@ class ArticleService {
             },
             limit: pageSize,
             offset: (page - 1) * pageSize,
-            attributes: ['id', 'uid', 'title', 'digest', 'commentCount', 'createdAt'],
+            attributes: ['id', 'uid', 'title', 'cover_url', 'digest', 'commentCount', 'createdAt'],
             include: [{
                 model: User,
                 attributes: ['user_name', 'avatar_url', 'nick_name'],
@@ -65,8 +65,10 @@ class ArticleService {
                 "digest",
                 "title",
                 "content",
+                "cover_url",
                 "commentCount",
                 "category",
+                "file_url",
                 "createdAt",
             ],
             include: [{
@@ -120,8 +122,8 @@ class ArticleService {
 
     }
     // 更新文章内容
-    async updateArticle({ uid, author, digest, id, title, content }) {
-        const [res] = await Article.update({ title, content, author, digest }, { where: { id, uid } })
+    async updateArticle({ uid, author, digest, id, title, content, cover_url = '', file_url = '' }) {
+        const [res] = await Article.update({ title, content, cover_url, author, digest, file_url }, { where: { id, uid } })
         return res
     }
     // 删除文章
