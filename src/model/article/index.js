@@ -41,9 +41,13 @@ const Article = seq.define('bedulive_article', {
         comment: "文章分类",
         defaultValue: "默认分类"
     },
+    file_name: {
+        type: DataTypes.STRING,
+        comment: '附件名字'
+    },
     file_url: {
         type: DataTypes.STRING,
-        comment: '文章附件'
+        comment: '附件路径'
     },
     // 创建时间
     createdAt: {

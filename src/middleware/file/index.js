@@ -65,7 +65,6 @@ const mergeFile = async (ctx, next) => {
     await mergeChunk(filePath, filename, size)
     if (purpose === 'avatar') {
         const avatar_url = SERVER_URL + '/' + filename
-        await updateById({ id, avatar_url })
         ctx.body = {
             code: '0',
             message: '上传图片成功',

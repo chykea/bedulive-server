@@ -4,9 +4,9 @@ const { Article, Comment } = require('../../model/article/index')
 const { Op } = require('sequelize')
 class ArticleService {
     // 发布文章
-    async createArticle({ uid, title, cover_url = '', author, content, digest, category, file_url = '' }) {
+    async createArticle({ uid, title, cover_url = '', author, content, digest, category, file_url = '', file_name = '' }) {
         const res = await Article.create({
-            uid, title, author, content, digest, cover_url, file_url
+            uid, title, author, content, digest, cover_url, file_name, file_url
         })
         return res.dataValues ? true : false
     }
@@ -68,6 +68,7 @@ class ArticleService {
                 "cover_url",
                 "commentCount",
                 "category",
+                "file_name",
                 "file_url",
                 "createdAt",
             ],
@@ -122,8 +123,8 @@ class ArticleService {
 
     }
     // 更新文章内容
-    async updateArticle({ uid, author, digest, id, title, content, cover_url = '', file_url = '' }) {
-        const [res] = await Article.update({ title, content, cover_url, author, digest, file_url }, { where: { id, uid } })
+    async updateArticle({ uid, author, digest, id, title, content, cover_url = '', file_name = '', file_url = '' }) {
+        const [res] = await Article.update({ title, content, cover_url, author, digest, file_name, file_url }, { where: { id, uid } })
         return res
     }
     // 删除文章

@@ -4,8 +4,8 @@ const { createArticle, getArticleDetail, getArticleList, getAllArticleList, dele
 class ArticleController {
     async addArticle(ctx, next) {
         const { uid, nick_name: author } = ctx.state.user
-        const { title, content, digest, cover_url, file_url } = ctx.request.body
-        const res = await createArticle({ uid, author, title, content, digest, cover_url, file_url })
+        const { title, content, digest, cover_url, file_url, file_name } = ctx.request.body
+        const res = await createArticle({ uid, author, title, content, digest, cover_url, file_name, file_url })
         if (res) {
             ctx.body = {
                 code: '0',
@@ -74,7 +74,7 @@ class ArticleController {
     }
     async updatedUserArticle(ctx, next) {
         const { uid, nick_name: author } = ctx.state.user
-        const { id, title, content, digest, cover_url, file_url } = ctx.request.body
+        const { id, title, content, digest, cover_url, file_url, file_name } = ctx.request.body
         if (!id || !title || !content || !digest) {
             ctx.body = {
                 code: '1',
@@ -82,7 +82,7 @@ class ArticleController {
             }
             return
         }
-        const res = await updateArticle({ id, author, uid, title, digest, content, cover_url, file_url })
+        const res = await updateArticle({ id, author, uid, title, digest, content, cover_url, file_url, file_name })
         if (res) {
             ctx.body = {
                 code: '0',
