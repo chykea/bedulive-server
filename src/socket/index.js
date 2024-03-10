@@ -1,4 +1,5 @@
 const socketIO = require('socket.io')
+const { NodeVM } = require('vm2')
 function createSocket(server) {
     // socket跨域问题解决
     const io = socketIO(server, { cors: true })
@@ -116,7 +117,6 @@ function createSocket(server) {
             const code = historyMap.get(data.roomId).code
             historyMap.set(data.roomId, { userList: toolUsers, code: code })
         })
-
         socket.on('disconnect', () => {
             // 当房主断线离开房间
             roomsOwners.forEach((value, key) => {
@@ -124,6 +124,30 @@ function createSocket(server) {
                     socket.broadcast.to(key).emit('roomOwnerLeave', { roomId: key, user: null })
                 }
             })
+        })
+
+        socket.on('runCode', async data => {
+            const code = data.code;
+            const vm = new NodeVM({
+                timeout: 2000, // 限制代码运行时间
+                console: 'redirect',
+                sandbox: {}
+            })
+            let res = []
+            // 获取console.log的执行结果
+            // 只能获取到代码中的console.方法的执行结果
+            vm.on('console.log', function (message) {
+                res.push(message)
+            })
+
+            try {
+                await vm.run(code);
+                // 代码运行结果
+                socket.emit('runRes', res)
+            } catch (error) {
+                socket.emit('runErr', error.message); // 发生错误时返回错误信息
+            }
+
         })
     })
 
