@@ -2,18 +2,19 @@ const socketIO = require('socket.io')
 function createSocket(server) {
     // socket跨域问题解决
     const io = socketIO(server, { cors: true })
-    let historyMap = new Map() // 用于保存历史
+    let historyMap = new Map() // 用于保存对应房间的历史消息
     let history = {
-        codeHistory: null, // 用于保存最新
+        codeHistory: null, // 用于保存直播间最新消息
         codeSetting: null,
         canvasHistory: null,
     }
-
+    let toolUsers = []
+    let roomsOwners = new Map()
     io.on('connection', (socket) => {
+        // 直播间
         // socket 即当前连接的用户
         socket.on('join', (data) => {
             socket.join(data.roomId)
-
             socket.emit('currentUser', io.sockets.adapter.rooms.get(data.roomId).size)
             socket.broadcast.to(data.roomId).emit('currentUser', io.sockets.adapter.rooms.get(data.roomId).size)
             // 如果教师已经编辑
@@ -32,11 +33,9 @@ function createSocket(server) {
                 historyMap.delete(roomId)
             }
         })
-
         socket.on('updateRoomInfo', (data) => {
             socket.broadcast.to(data.roomId).emit('updateRoom', data.roomInfo)
         })
-
         socket.on('sendMsg', (data, cb) => {
             if (data.type == 'chat') {
                 socket.broadcast.to(data.roomId).emit('getMsg', data)
@@ -48,18 +47,83 @@ function createSocket(server) {
             }
             cb && cb({ code: "200", msg: "消息发送成功" })
         })
-
         socket.on('openShare', (data) => {
             history.codeSetting = { roomId: data.roomId, user: data.user, readOnly: !data.isShare }
             historyMap.set(data.roomId, history)
             // 开启共享即关闭只读
             socket.broadcast.to(data.roomId).emit('share', { user: data.user, readOnly: !data.isShare })
         })
-
         socket.on('sendPaint', (data) => {
             history.canvasHistory = { roomId: data.roomId, user: data.user, imgSrc: data.data }
             historyMap.set(data.roomId, history)
             socket.broadcast.to(data.roomId).emit('getPaint', data)
+        })
+
+
+        // 工具页代码共享
+        // 创建房间
+        socket.on('createRoom', (data) => {
+            if (historyMap.get(data.roomId)) {
+                return
+            }
+            // 房主
+            roomsOwners.set(data.roomId, socket.id)
+            socket.join(data.roomId)
+            toolUsers.push(data.user)
+            // 存储代码
+            historyMap.set(data.roomId, { userList: toolUsers, code: data.code })
+        })
+        socket.on('sendCode', (data) => {
+            historyMap.set(data.roomId, { userList: toolUsers, code: data.code })
+            socket.broadcast.to(data.roomId).emit('receiveCode', data)
+        })
+        socket.on('joinRoom', (data) => {
+            if (!(io.sockets.adapter.rooms.get(data.roomId))) {
+                socket.emit('roomNotExist')
+                return
+            }
+            socket.join(data.roomId)
+            toolUsers.push(data.user)
+            // 分开代码和用户列表
+            const { code, userList } = historyMap.get(data.roomId)
+            // 加入房间,要获取这个房间已发送的数据
+            socket.emit('successJoin', { connect: true, userList, roomId: data.roomId })
+            socket.emit('receiveCode', { code })
+
+            // 通知其他用户有人加入房间
+            socket.broadcast.to(data.roomId).emit('userJoin', { userList })
+        })
+        socket.on('leaveRoom', (data) => {
+            socket.leave(data.roomId)
+            // 最后一个用户离开后,清空
+            if (!(io.sockets.adapter.rooms.get(data.roomId))) {
+                toolUsers = []
+                historyMap.delete(data.roomId)
+                return
+            }
+            // 房主离开
+            if (roomsOwners.get(data.roomId) === socket.id) {
+                roomsOwners.delete(data.roomId)
+                socket.broadcast.to(data.roomId).emit('roomOwnerLeave', { roomId: data.roomId, user: data.user })
+                toolUsers = []
+                historyMap.delete(data.roomId)
+                return
+            }
+            // 用户列表删除该用户
+            toolUsers = toolUsers.filter(item => item.uid !== data.user.uid)
+            // 用户已离开房间(需要提醒哪个用户离开)
+            socket.broadcast.to(data.roomId).emit('userLeave', { userList: toolUsers })
+            const code = historyMap.get(data.roomId).code
+            historyMap.set(data.roomId, { userList: toolUsers, code: code })
+        })
+
+        socket.on('disconnect', () => {
+            // 当房主断线离开房间
+            roomsOwners.forEach((value, key) => {
+                if (value === socket.id) {
+                    socket.broadcast.to(key).emit('roomOwnerLeave', { roomId: key, user: null })
+                }
+            })
         })
     })
 
