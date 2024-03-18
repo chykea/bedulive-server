@@ -71,13 +71,20 @@ function createSocket(server) {
             roomsOwners.set(data.roomId, socket.id)
             socket.join(data.roomId)
             toolUsers.push(data.user)
-            // 存储代码
-            historyMap.set(data.roomId, { userList: toolUsers, code: data.code })
+            // 存储代码/图片
+            historyMap.set(data.roomId, { userList: toolUsers, code: data.code || '', imgSrc: data.imgSrc || '' })
         })
         socket.on('sendCode', (data) => {
-            historyMap.set(data.roomId, { userList: toolUsers, code: data.code })
+            let origin = historyMap.get(data.roomId)
+            historyMap.set(data.roomId, { ...origin, code: data.code })
             socket.broadcast.to(data.roomId).emit('receiveCode', data)
         })
+        socket.on('sendImg', (data) => {
+            let origin = historyMap.get(data.roomId)
+            historyMap.set(data.roomId, { ...origin, imgSrc: data.imgSrc })
+            socket.broadcast.to(data.roomId).emit('receiveImg', data)
+        })
+
         socket.on('joinRoom', (data) => {
             if (!(io.sockets.adapter.rooms.get(data.roomId))) {
                 socket.emit('roomNotExist')
@@ -86,10 +93,11 @@ function createSocket(server) {
             socket.join(data.roomId)
             toolUsers.push(data.user)
             // 分开代码和用户列表
-            const { code, userList } = historyMap.get(data.roomId)
+            const { code, imgSrc, userList } = historyMap.get(data.roomId)
             // 加入房间,要获取这个房间已发送的数据
             socket.emit('successJoin', { connect: true, userList, roomId: data.roomId })
             socket.emit('receiveCode', { code })
+            socket.emit('receiveImg', { imgSrc })
 
             // 通知其他用户有人加入房间
             socket.broadcast.to(data.roomId).emit('userJoin', { userList })
@@ -125,6 +133,7 @@ function createSocket(server) {
                 }
             })
         })
+
 
         socket.on('runCode', async data => {
             const code = data.code;
