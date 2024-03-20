@@ -1,17 +1,19 @@
 module.exports = (err, ctx) => {
-    let status = 500
+    let status = 404
+    console.log(err.message);
+    console.log(err.code);
+    console.log(err.result);
     switch (err.code) {
-        case '10001':
-            status = 400
-            break
-        case '10002':
-            status = 409
+        case '10005':
+            status = 500
             break
         default:
-            status = 500
+            status = 404
     }
     ctx.status = status
-    ctx.body = err
-    console.log('错误消息', err);
-    // console.log(err)
+    ctx.body = {
+        code: err.code,
+        message: err.message,
+        result: err.result
+    }
 }

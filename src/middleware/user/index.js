@@ -1,5 +1,6 @@
 const bcrypt = require('bcryptjs')
 const { getUserInfo } = require('../../service/user/index')
+const errTransform = require('../../constanst/err.transform')
 
 const { userFormateError, userAlreadyExited, invalidPassword, userLoginError, userDoesNotExist } = require('../../constanst/err.type')
 
@@ -11,7 +12,7 @@ const userValidator = async (ctx, next) => {
     if (!user_name || !password) {
         console.error('用户名或密码为空', ctx.request.body)
         // 抛出错误(如果要用这种方式抛出异常,不要用try-catch,会被捕获到)
-        ctx.app.emit('error', userFormateError, ctx)
+        ctx.app.emit('error', errTransform(userFormateError), ctx)
         return
     }
 
@@ -22,7 +23,7 @@ const verifyUser = async (ctx, next) => {
     const { user_name } = ctx.request.body
     // 需要await，不然返回的是一个Promise对象
     if (await getUserInfo({ user_name })) {
-        ctx.app.emit('error', userAlreadyExited, ctx)
+        ctx.app.emit('error', errTransform(userAlreadyExited), ctx)
         return
     }
     await next()
@@ -51,14 +52,13 @@ const verifyLogin = async (ctx, next) => {
     const res = await getUserInfo({ user_name })
     if (!res) {
         console.error('用户名不存在', { user_name })
-        ctx.app.emit('error', userDoesNotExist, ctx)
+        ctx.app.emit('error', errTransform(userDoesNotExist), ctx)
         return
     }
-
     // 2. 密码是否匹配(不匹配: 报错)
     // 获取输入的密码与数据库中经过加盐加密处理的密码进行比对,compareSync会自动进行解密
     if (!bcrypt.compareSync(password, res.password)) {
-        return ctx.app.emit('error', invalidPassword, ctx)
+        return ctx.app.emit('error', errTransform(invalidPassword), ctx)
 
     }
     await next()
@@ -70,7 +70,7 @@ const verifyOldPassword = async (ctx, next) => {
 
     const res = await getUserInfo({ id })
     if (!bcrypt.compareSync(old_password, res.password)) {
-        ctx.app.emit('error', invalidPassword, ctx)
+        ctx.app.emit('error', errTransform(invalidPassword), ctx)
         return
     }
     await next()

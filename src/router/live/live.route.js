@@ -1,6 +1,7 @@
 const Router = require('koa-router')
 const { auth } = require('../../middleware/auth/index')
 const { STREAM_URL, STREAM_SERVER, APP_URL } = require('../../config/config.default.js')
+const errTransform = require('../../constanst/err.transform')
 const { invalidAuth } = require('../../constanst/err.type')
 const { getLiveList, getLiveRoom, setLiveInfo } = require('../../controller/live/index.js')
 
@@ -12,7 +13,7 @@ router.get('/getPlayerURL', auth, async (ctx, next) => {
     const { roomId } = ctx.request.query;
     const { user } = ctx.state
     if (user.uid === roomId && user.identity === '1') {
-        ctx.app.emit('error', invalidAuth, ctx)
+        ctx.app.emit('error', errTransform(invalidAuth), ctx)
         return
     }
     ctx.body = {
@@ -26,7 +27,7 @@ router.get('/getPushURL', auth, (ctx, next) => {
     const { user } = ctx.state
     // 如果是学生则没有权限
     if (user.identity === '1') {
-        ctx.app.emit('error', invalidAuth, ctx)
+        ctx.app.emit('error', errTransform(invalidAuth), ctx)
         return
     }
     ctx.body = {

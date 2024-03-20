@@ -3,6 +3,7 @@ const jwt = require('jsonwebtoken')
 const { JWT_SECRET } = require('../../config/config.default')
 
 const { tokenExpiredError, invalidToken } = require('../../constanst/err.type.js')
+const errTransform = require('../../constanst/err.transform.js')
 
 const auth = async (ctx, next) => {
     let { authorization } = ctx.request.header
@@ -20,10 +21,10 @@ const auth = async (ctx, next) => {
         switch (err.name) {
             case 'TokenExpiredError':
                 console.error('token已过期', err)
-                return ctx.app.emit('error', tokenExpiredError, ctx)
+                return ctx.app.emit('error', errTransform(tokenExpiredError), ctx)
             case 'JsonWebTokenError':
                 console.error('无效的token', err)
-                return ctx.app.emit('error', invalidToken, ctx)
+                return ctx.app.emit('error', errTransform(invalidToken), ctx)
         }
     }
 
