@@ -49,6 +49,11 @@ const Article = seq.define('bedulive_article', {
         type: DataTypes.STRING,
         comment: '附件路径'
     },
+    state: {
+        type: DataTypes.INTEGER,
+        defaultValue: 0,
+        comment: '文章状态 0:正常 1:封禁'
+    },
     // 创建时间
     createdAt: {
         type: DataTypes.DATE,
@@ -131,5 +136,6 @@ Comment.hasMany(Comment, {
 
 // 强制同步数据库(创建数据表,更新字段执行后会删除原来的表)
 // 创建后之后记得注释
-// seq.sync({ force: true })
+// Article.sync({ force: true })
+// Comment.sync({ force: true })
 module.exports = { Article, Comment }

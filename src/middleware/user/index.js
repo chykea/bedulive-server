@@ -18,7 +18,7 @@ const userValidator = async (ctx, next) => {
 
     await next()
 }
-
+// 验证数据库是否有该用户
 const verifyUser = async (ctx, next) => {
     const { user_name } = ctx.request.body
     // 需要await，不然返回的是一个Promise对象

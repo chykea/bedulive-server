@@ -17,8 +17,19 @@ const Live = seq.define('bedulive_live', {
         allowNull: false,
         defaultValue: '默认标题',
         comment: '标题'
+    },
+    living: {
+        type: DataTypes.BOOLEAN,
+        allowNull: false,
+        defaultValue: false,
+        comment: '是否正在直播'
+    },
+    state: {
+        type: DataTypes.INTEGER,
+        allowNull: false,
+        defaultValue: 0,
+        comment: '是否被封禁'
     }
-
 })
 
 Live.belongsTo(User, {

@@ -15,10 +15,10 @@ class ArticleService {
         let { rows: articles, count: total } = await Article.findAndCountAll({
             limit: pageSize,
             offset: (page - 1) * pageSize,
-            attributes: ['id', 'uid', 'title', 'digest', 'commentCount', 'createdAt', 'cover_url'],
+            attributes: ['id', 'uid', 'title', 'digest', 'commentCount', 'createdAt', 'cover_url', 'state'],
             include: [{
                 model: User,
-                attributes: ['user_name', 'avatar_url', 'nick_name'],
+                attributes: ['uid', 'user_name', 'avatar_url', 'nick_name'],
                 as: 'user'
             }]
         })
@@ -130,7 +130,14 @@ class ArticleService {
     // 删除文章
     async deleteArticleByID({ id, uid }) {
         // 根据文章id、用户uid进行删除
-        const res = await Article.destroy({ where: { id, uid } })
+        const res = await Article.destroy({
+            where: {
+                [Op.or]: {
+                    id,
+                    uid
+                }
+            }
+        })
         if (res === 1) {
             return true
         } else {
@@ -161,6 +168,15 @@ class ArticleService {
     async deleteCommentsByID({ id }) {
         const res = await Comment.destroy({ where: { id } })
         return res === 1 ? true : false
+    }
+
+    async lockArticleByID({ id, state }) {
+        const res = await Article.update({ state }, { where: { id } })
+        return res[0] === 1 ? true : false
+    }
+    async unlockArticleByID({ id, state }) {
+        const res = await Article.update({ state }, { where: { id } })
+        return res[0] === 1 ? true : false
     }
 }
 

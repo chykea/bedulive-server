@@ -36,9 +36,14 @@ const User = seq.define('bedulive_user', {
         defaultValue: 0,
         comment: '用户身份, 0: 管理员(默认); 1: 学生; 2: 教师',
     },
+    state: {
+        type: DataTypes.INTEGER,
+        allowNull: false,
+        defaultValue: 0,
+        comment: '用户状态, 0: 正常; 1: 禁用',
+    }
 })
 
-// User.hasMany(Live, { foreignKey: 'uid' })
 // 强制同步数据库(创建数据表,更新字段执行后会删除原来的表)
 // 创建后之后记得注释
 // User.sync({ force: true })

@@ -1,5 +1,5 @@
 const { createArticle, getArticleDetail, getArticleList, getAllArticleList, deleteArticleByID, updateArticle, // 发布文章
-    addComments, deleteCommentsByID, searchArticleBy
+    addComments, deleteCommentsByID, searchArticleBy, lockArticleByID, unlockArticleByID
 } = require('../../service/article/index')
 class ArticleController {
     async addArticle(ctx, next) {
@@ -57,7 +57,11 @@ class ArticleController {
     }
     async deleteArticle(ctx, next) {
         const { id } = ctx.query
-        const { uid } = ctx.state.user
+        const { identity } = ctx.state.user
+        let uid = '';
+        if (identity === '0') {
+            uid = ctx.state.user.uid
+        }
         const res = await deleteArticleByID({ id, uid })
         if (res) {
             ctx.body = {
@@ -145,6 +149,62 @@ class ArticleController {
             code: '0',
             message: '查询成功',
             res,
+        }
+
+    }
+
+    async lockArticle(ctx, next) {
+        const { id } = ctx.query
+        const { identity } = ctx.state.user
+        if (identity !== '0') {
+            ctx.body = {
+                code: 401,
+                message: '权限不足',
+                res: null
+            }
+            return
+        }
+        const res = await lockArticleByID({ id, state: 1 })
+        if (res) {
+            ctx.body = {
+                code: '0',
+                message: '锁定成功',
+                res: true
+            }
+            return
+        }
+        ctx.body = {
+            code: 500,
+            message: '操作失败',
+            res: true
+        }
+
+    }
+    async unlockArticle(ctx, next) {
+        const { id } = ctx.query
+        const { identity } = ctx.state.user
+
+        if (identity !== '0') {
+            ctx.body = {
+                code: 401,
+                message: '权限不足',
+                res: null
+            }
+            return
+        }
+        const res = await unlockArticleByID({ id, state: 0 })
+        if (res) {
+            ctx.body = {
+                code: '0',
+                message: '解除成功',
+                res: true
+            }
+            return
+        }
+        ctx.body = {
+            code: 500,
+            message: '操作失败',
+            res: true
         }
 
     }

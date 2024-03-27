@@ -9,7 +9,9 @@ const {
     updatedUserArticle,
     comments,
     deleteComments,
-    searchArticle
+    searchArticle,
+    lockArticle,
+    unlockArticle
 } = require('../../controller/article/index')
 
 const router = new Router({ prefix: '/article' })
@@ -33,5 +35,10 @@ router.post('/comment', auth, comments)
 router.post('/reply', auth, comments)
 // 删除评论
 router.get('/delete', auth, deleteComments)
+
+// 锁定文章
+router.get('/lock', auth, lockArticle)
+// 解锁文章
+router.get('/unlock', auth, unlockArticle)
 
 module.exports = router

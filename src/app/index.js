@@ -12,6 +12,7 @@ const defaultRouter = require('../router/default.route')
 const userRouter = require('../router/user/user.route.js')
 const liveRouter = require('../router/live/live.route.js')
 const articleRouter = require('../router/article/article.route.js')
+const liveStudentRouter = require('../router/live-student/liveStudent.route.js')
 
 const errHandler = require('./status/index.js')
 const app = new Koa()
@@ -61,6 +62,7 @@ app.use(defaultRouter.routes())
 app.use(userRouter.routes())
 app.use(liveRouter.routes())
 app.use(articleRouter.routes())
+app.use(liveStudentRouter.routes())
 
 // 监听错误
 app.on('error', errHandler)

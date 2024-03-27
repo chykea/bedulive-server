@@ -1,9 +1,8 @@
-const { createUser, getUserInfo, updateById } = require('../../service/user/index.js')
+const { createUser, getUserInfo, updateById, getAllUser } = require('../../service/user/index.js')
 const { createLiveRoom } = require('../../service/live/index.js')
 const { JWT_SECRET, SERVER_URL } = require('../../config/config.default.js')
 const jwt = require('jsonwebtoken')
 const { v1: uuidv1 } = require('uuid')
-const path = require('path')
 
 class UserController {
     async register(ctx, next) {
@@ -32,11 +31,17 @@ class UserController {
     }
     async login(ctx, next) {
         const { user_name } = ctx.request.body
-
         // 1. 获取用户信息(在token的payload中, 记录id, user_name, is_admin)
         // 从返回结果对象中剔除password属性, 将剩下的属性放到res对象
         const { password, ...res } = await getUserInfo({ user_name })
-        console.log(res);
+        if (res.state === 1) {
+            ctx.body = {
+                code: 401,
+                message: '登录失败,该用户已被封禁',
+                result: null
+            }
+            return
+        }
         ctx.body = {
             code: 200,
             message: '用户登录成功',
@@ -92,7 +97,108 @@ class UserController {
             }
         }
     }
+    async getAllUserList(ctx, next) {
+        const { identity } = ctx.state.user
+        if (identity !== '0') {
+            ctx.body = {
+                code: 401,
+                message: '权限不足',
+                res: null
+            }
+            return
+        }
+        const { page, pageSize } = ctx.query
+        const { res, total } = await getAllUser({ page, pageSize })
+        if (res) {
+            ctx.body = {
+                code: 200,
+                message: '获取用户列表成功',
+                res,
+                total,
+            }
+            return
+        }
+        ctx.body = {
+            code: 200,
+            message: '获取用户列表成功',
+            total: 0,
+            res: []
+        }
 
+    }
+    async banUser(ctx, next) {
+        const { identity } = ctx.state.user
+        const { id } = ctx.query
+        if (identity !== '0') {
+            ctx.body = {
+                code: 401,
+                message: '权限不足',
+                res: null
+            }
+            return
+        }
+        if (await updateById({ id, state: 1 })) {
+            ctx.body = {
+                code: 200,
+                message: '封禁成功',
+                res: null
+            }
+            return
+        }
+        ctx.body = {
+            code: 500,
+            message: '封禁失败',
+            res: null
+        }
+    }
+    async unbanUser(ctx, next) {
+        const { identity } = ctx.state.user
+        const { id } = ctx.query
+        if (identity !== '0') {
+            ctx.body = {
+                code: 401,
+            }
+            return
+        }
+        if (await updateById({ id, state: 0 })) {
+            ctx.body = {
+                code: 200,
+                message: '解封成功',
+                res: null
+            }
+            return
+        }
+        ctx.body = {
+            code: 500,
+            message: '解封失败',
+            res: null
+        }
+    }
+    async updateUser(ctx, next) {
+        const { identity: i } = ctx.state.user
+        if (i !== '0') {
+            ctx.body = {
+                code: 401,
+                message: '权限不足',
+                res: null
+            }
+            return
+        }
+        const { id, identity } = ctx.request.body
+        if (await updateById({ id, identity })) {
+            ctx.body = {
+                code: 200,
+                message: '修改成功',
+                res: null
+            }
+            return
+        }
+        ctx.body = {
+            code: 500,
+            message: '修改失败',
+            res: null
+        }
+    }
 }
 
 module.exports = new UserController()
