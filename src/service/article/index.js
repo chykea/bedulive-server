@@ -75,7 +75,7 @@ class ArticleService {
             include: [{
                 model: User,
                 as: 'user',
-                attributes: ['user_name', 'avatar_url', 'nick_name']
+                attributes: ['uid', 'user_name', 'avatar_url', 'nick_name']
             }]
         })
         if (article === null) return null

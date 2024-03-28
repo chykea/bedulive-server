@@ -1,6 +1,6 @@
 const Live = require('../../model/live/index')
 const User = require('../../model/user/index')
-const LiveStudent = require('../../model/live-student/index')
+const LiveStudent = require('../../model/live_student/index')
 const { Op } = require('sequelize')
 class LiveStudentService {
     async getLiveRoomBy({ uid, lid }) {

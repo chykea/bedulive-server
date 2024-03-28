@@ -1,10 +1,10 @@
 const { DataTypes, Sequelize } = require('sequelize')
-const User = require('../../model/user/index')
-const Live = require('../../model/live/index')
+const User = require('../user/index')
+const Live = require('../live/index')
 const seq = require('../../db/seq')
 
 
-// 用于学生映射直播间表
+// 学生订阅直播间表
 const LiveStudent = seq.define('bedulive_live_student', {
     // id 会被sequelize自动创建, 管理
     uid: {

@@ -1,4 +1,4 @@
-const { getAllLiveRoomBy, joinLiveRoom, quitLiveRoom, getLiveRoomBy } = require('../../service/live-student');
+const { getAllLiveRoomBy, joinLiveRoom, quitLiveRoom, getLiveRoomBy } = require('../../service/live_student');
 
 class LiveStudentController {
 

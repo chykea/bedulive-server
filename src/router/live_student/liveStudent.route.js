@@ -1,5 +1,5 @@
 const errTransform = require('../../constanst/err.transform')
-const { getUserLiveRoom, subscribeLiveRoom, unsubscribeLiveRoom, getSubscribeLiveRoom } = require('../../controller/live-student/index')
+const { getUserLiveRoom, subscribeLiveRoom, unsubscribeLiveRoom, getSubscribeLiveRoom } = require('../../controller/live_student/index')
 const { auth } = require('../../middleware/auth')
 
 const Router = require('koa-router')
