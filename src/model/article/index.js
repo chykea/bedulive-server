@@ -4,7 +4,7 @@ const seq = require('../../db/seq');
 const User = require('../user');
 
 // 文章模型
-const Article = seq.define('bedulive_article', {
+const Article = seq.define('bedulive_articles', {
     // id 会被sequelize自动创建, 管理
     uid: {
         type: DataTypes.STRING,
@@ -71,7 +71,7 @@ const Article = seq.define('bedulive_article', {
 })
 
 // 文章模型
-const Comment = seq.define('bedulive_comment', {
+const Comment = seq.define('bedulive_comments', {
 
     content: {
         type: DataTypes.TEXT,

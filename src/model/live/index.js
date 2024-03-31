@@ -4,7 +4,7 @@ const seq = require('../../db/seq')
 
 // 创建模型(Model bedulive_live -> 表 bedulive_live)
 // 通过用户的uid查找对应的推流地址(这里是通过uid来拼接处推流地址的,不会频繁变动)
-const Live = seq.define('bedulive_live', {
+const Live = seq.define('bedulive_lives', {
     // id 会被sequelize自动创建, 管理
     uid: {
         type: DataTypes.STRING,

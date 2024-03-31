@@ -5,7 +5,7 @@ const seq = require('../../db/seq')
 
 
 // 学生订阅直播间表
-const LiveStudent = seq.define('bedulive_live_student', {
+const LiveStudent = seq.define('bedulive_live_students', {
     // id 会被sequelize自动创建, 管理
     uid: {
         type: DataTypes.STRING,
