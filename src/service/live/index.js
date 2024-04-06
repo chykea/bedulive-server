@@ -35,8 +35,12 @@ class LiveService {
         return res.dataValues ? true : false
     }
 
-    async updateLiveRoom({ uid, title }) {
-        let res = await Live.update({ title }, { where: { uid } })
+    async updateLiveRoom({ uid, title, living, state }) {
+        const updateOpt = {}
+        title && Object.assign(updateOpt, { title })
+        living == 0 ? Object.assign(updateOpt, { living: 0 }) : Object.assign(updateOpt, { living: 1 })
+        state == 0 ? Object.assign(updateOpt, { state: 0 }) : Object.assign(updateOpt, { state: 1 })
+        let res = await Live.update(updateOpt, { where: { uid } })
         return res
     }
 }

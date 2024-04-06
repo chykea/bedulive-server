@@ -3,11 +3,15 @@ const { auth } = require('../../middleware/auth/index')
 const { STREAM_URL, STREAM_SERVER, APP_URL } = require('../../config/config.default.js')
 const errTransform = require('../../constanst/err.transform')
 const { invalidAuth } = require('../../constanst/err.type')
-const { getLiveList, getLiveRoom, setLiveInfo } = require('../../controller/live/index.js')
+const { getLiveList, getLiveRoom, setLiveInfo, setLiving, setLiveState } = require('../../controller/live/index.js')
 
 const router = new Router({ prefix: '/live' })
 
 router.post('/setLiveInfo', auth, setLiveInfo)
+
+router.post('/setLiveState', auth, setLiveState)
+
+router.post('/setLiving', auth, setLiving)
 
 router.get('/getPlayerURL', auth, async (ctx, next) => {
     const { roomId } = ctx.request.query;

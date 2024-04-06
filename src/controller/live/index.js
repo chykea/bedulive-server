@@ -28,8 +28,40 @@ class LiveController {
             return
         }
         ctx.body = {
-            code: '10201',
-            message: '失败',
+            code: '1',
+            message: '更新失败',
+        }
+    }
+    async setLiveState(ctx, next) {
+        const { uid } = ctx.state.user
+        const { state } = ctx.request.body
+        const res = await updateLiveRoom({ uid, state })
+        if (res[0]) {
+            ctx.body = {
+                code: '0',
+                message: '更新成功',
+            }
+            return
+        }
+        ctx.body = {
+            code: '1',
+            message: '更新失败',
+        }
+    }
+    async setLiving(ctx, next) {
+        const { uid } = ctx.state.user
+        const { living } = ctx.request.body
+        const res = await updateLiveRoom({ uid, living })
+        if (res[0]) {
+            ctx.body = {
+                code: '0',
+                message: '更新成功',
+            }
+            return
+        }
+        ctx.body = {
+            code: '1',
+            message: '更新失败',
         }
     }
 }
